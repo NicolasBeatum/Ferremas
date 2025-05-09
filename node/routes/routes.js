@@ -1,0 +1,64 @@
+import express from 'express';
+import {
+    getUsuarios,
+    createUsuario,
+    getUsuarioById,
+    updateUsuario,
+    deleteUsuario
+} from '../controllers/UsuarioController.js';
+
+import {
+    getProductos,
+    createProducto,
+    getProductoById,
+    updateProducto,
+    deleteProducto
+} from '../controllers/ProductoController.js';
+
+import {
+    getTipoUsuarios,
+    createTipoUsuario,
+    getTipoUsuarioById,
+    updateTipoUsuario,
+    deleteTipoUsuario
+} from '../controllers/TipoUsuarioController.js';
+
+import {
+    getPedidos,
+    createPedido,
+    getPedidoById,
+    updatePedido,
+    deletePedido
+} from '../controllers/PedidoController.js';
+
+const router = express.Router();
+
+// Rutas para Usuarios
+router.get('/usuarios', getUsuarios);
+router.post('/usuarios', createUsuario);
+router.get('/usuarios/:id', getUsuarioById);
+router.put('/usuarios/:id', updateUsuario);
+router.delete('/usuarios/:id', deleteUsuario);
+
+// Rutas para Productos
+router.get('/productos', getProductos);
+router.post('/productos', createProducto);
+router.get('/productos/:id', getProductoById);
+router.put('/productos/:id', updateProducto);
+router.delete('/productos/:id', deleteProducto);
+
+// Rutas para Tipos de Usuario
+router.get('/tipos-usuario', getTipoUsuarios);
+router.post('/tipos-usuario', createTipoUsuario);
+router.get('/tipos-usuario/:id', getTipoUsuarioById);
+router.put('/tipos-usuario/:id', updateTipoUsuario);
+router.delete('/tipos-usuario/:id', deleteTipoUsuario);
+
+// Rutas para Pedidos
+router.get('/pedidos', getPedidos);
+router.post('/pedidos', createPedido);
+router.get('/pedidos/:id', getPedidoById);
+router.put('/pedidos/:id', updatePedido);
+router.delete('/pedidos/:id', deletePedido);
+
+export default router;
