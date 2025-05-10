@@ -1,38 +1,148 @@
-.App {
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+
+.app {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.topbar {
+  background-color: #b21010;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.topbar-container {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.logo {
+  height: 40px;
+  margin-right: 20px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: rgb(255, 255, 255);
+  border-radius: 20px;
+  padding: 5px 15px;
+  flex: 1;
+  min-width: 200px;
+  max-width: 100%;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  padding: 8px;
+  flex: 1;
+  font-size: 14px;
+  width: 100%;
+}
+
+.search-icon {
+  margin-right: 8px;
+  color: gray;
+}
+
+.topbar-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.topbar-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+}
+
+.topbar-item strong {
+  display: block;
+  font-weight: bold;
+}
+
+.topbar-item.cart {
+  font-size: 24px;
+}
+
+.topbar-bottom {
+  background-color: #a10e0e;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+
+.left-items a,
+.right-items span,
+.right-items a {
+  margin-right: 15px;
+  color: white;
+  text-decoration: none;
+}
+.left-items a,
+.right-items a:hover {
+  text-decoration: underline;
+}
+
+.header {
+  background-color: #a10e0e;
+  color: white;
+  padding: 20px;
+}
+
+.hero {
+  padding: 40px;
+  background-image: url('https://via.placeholder.com/1200x300?text=Bienvenidos+a+Ferremas');
+  background-size: cover;
+  color: rgb(2, 0, 0);
+}
+
+.productos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 40px;
+}
+
+.producto {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.producto img {
+  max-width: 100%;
+  height: 150px;
+  object-fit: contain;
+}
+
+.footer {
+  background-color: #a10e0e;
+  color: white;
+  padding: 15px;
+}
+.footer p {
+  margin: 0;
+}
+.offers-carousel {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.offers-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
 }
