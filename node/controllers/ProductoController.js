@@ -12,9 +12,9 @@ export const getProductos = async (req, res) => {
 
 // Crear un nuevo producto
 export const createProducto = async (req, res) => {
-    const { NombreProducto, DescripcionProducto, StockProducto, PrecioProducto } = req.body;
+    const { NombreProducto, DescripcionProducto, StockProducto, PrecioProducto, ImagenProducto } = req.body;
     try {
-        const producto = await Producto.create({ NombreProducto, DescripcionProducto, StockProducto, PrecioProducto });
+        const producto = await Producto.create({ NombreProducto, DescripcionProducto, StockProducto, PrecioProducto, ImagenProducto });
         res.status(201).json({ message: 'Producto creado exitosamente', producto });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -40,7 +40,7 @@ export const getProductoById = async (req, res) => {
 // Actualizar un producto
 export const updateProducto = async (req, res) => {
     const { id } = req.params;
-    const { NombreProducto, DescripcionProducto, StockProducto, PrecioProducto } = req.body;
+    const { NombreProducto, DescripcionProducto, StockProducto, PrecioProducto, ImagenProducto } = req.body;
     try {
         const producto = await Producto.findByPk(id);
 
@@ -48,7 +48,7 @@ export const updateProducto = async (req, res) => {
             return res.status(404).json({ message: 'Producto no encontrado' });
         }
 
-        await producto.update({ NombreProducto, DescripcionProducto, StockProducto, PrecioProducto });
+        await producto.update({ NombreProducto, DescripcionProducto, StockProducto, PrecioProducto, ImagenProducto });
         res.json({ message: 'Producto actualizado exitosamente' });
     } catch (error) {
         res.status(500).json({ error: error.message });

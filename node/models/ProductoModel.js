@@ -22,6 +22,10 @@ const Producto = sequelize.define('Producto', {
     PrecioProducto: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    ImagenProducto: {  // NUEVO CAMPO
+        type: DataTypes.STRING(255),
+        allowNull: true
     }
 }, {
     tableName: 'Producto',

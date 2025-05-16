@@ -44,21 +44,22 @@ CREATE TABLE Producto (
     NombreProducto VARCHAR(100) NOT NULL,
     DescripcionProducto VARCHAR(200),
     StockProducto INT NOT NULL,
-    PrecioProducto INT NOT NULL
+    PrecioProducto INT NOT NULL,
+    ImagenProducto VARCHAR(255)
 );
 
 -- Insertar 10 productos con stock aleatorio y precios razonables en CLP
-INSERT INTO Producto (NombreProducto, DescripcionProducto, StockProducto, PrecioProducto) VALUES
-('Martillo', 'Herramienta manual para clavar o extraer clavos', 45, 7500),
-('Destornillador', 'Herramienta para atornillar o desatornillar tornillos', 65, 3200),
-('Taladro', 'Herramienta eléctrica para perforar materiales', 38, 45000),
-('Serrucho', 'Herramienta de corte manual para madera', 52, 8900),
-('Alicate', 'Herramienta para sujetar o cortar alambres', 76, 5600),
-('Llave Inglesa', 'Herramienta ajustable para apretar tuercas y pernos', 33, 8700),
-('Nivel', 'Herramienta para verificar nivelación de superficies', 47, 6900),
-('Cinta Métrica', 'Instrumento de medición de longitud', 81, 2500),
-('Caja de Herramientas', 'Contenedor para almacenar herramientas', 29, 15900),
-('Broca', 'Accesorio para taladro para perforar materiales', 59, 3400);
+INSERT INTO Producto (NombreProducto, DescripcionProducto, StockProducto, PrecioProducto, ImagenProducto) VALUES
+('Martillo', 'Herramienta manual para clavar o extraer clavos', 45, 7500, 'https://rgm.vtexassets.com/arquivos/ids/156235/Martillo.png?v=638554617786370000'),
+('Destornillador', 'Herramienta para atornillar o desatornillar tornillos', 65, 3200, 'https://construmartcl.vtexassets.com/arquivos/ids/230441-800-auto?v=638811980566570000&width=800&height=auto&aspect=true'),
+('Taladro', 'Herramienta eléctrica para perforar materiales', 38, 45000, 'https://www.dimarsa.cl/media/catalog/product/m/a/marcaseinhell4513940-rojo1jpeg_0.jpg'),
+('Serrucho', 'Herramienta de corte manual para madera', 52, 8900, 'https://cdnx.jumpseller.com/ferroelectronic/image/18498694/serruchotoolmak.jpg?1697570959'),
+('Alicate', 'Herramienta para sujetar o cortar alambres', 76, 5600, 'https://www.weitzler.cl/bitobee/wp-content/uploads/2022/11/65002100003.jpg'),
+('Llave Inglesa', 'Herramienta ajustable para apretar tuercas y pernos', 33, 8700, 'https://cdnx.jumpseller.com/gti-electronica/image/44181194/resize/640/640?1704743010'),
+('Nivel', 'Herramienta para verificar nivelación de superficies', 47, 6900, 'https://yoclaudiomercantil.com.do/wp-content/uploads/2022/07/nivel-torpedo-de-9-truper-yoclaudiomercantil.jpg'),
+('Cinta Métrica', 'Instrumento de medición de longitud', 81, 2500, 'https://cdnx.jumpseller.com/my-toolbox-chile/image/42833863/d_nq_np_2x_820651-mlc40854154766_022020-f-8cff2697-107e-4579-baa7-b830d0424250.jpg?1732308296'),
+('Caja de Herramientas', 'Contenedor para almacenar herramientas', 29, 15900, 'https://mechanicshop.cl/wp-content/uploads/2022/07/351492-gr-caja-de-herramientas-con-66-piezas-1.jpg'),
+('Broca', 'Accesorio para taladro para perforar materiales', 59, 3400, 'https://ae01.alicdn.com/kf/Se3491420cfb04fa0a9283362c60ff54c9.jpg');
 
 -- Tabla: Pedidos
 CREATE TABLE Pedidos (
