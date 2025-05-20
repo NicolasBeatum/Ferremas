@@ -4,7 +4,8 @@ import {
     createUsuario,
     getUsuarioById,
     updateUsuario,
-    deleteUsuario
+    deleteUsuario,
+    loginUsuario // <-- AGREGA loginUsuario aquí
 } from '../controllers/UsuarioController.js';
 
 import {
@@ -30,6 +31,9 @@ import {
     updatePedido,
     deletePedido
 } from '../controllers/PedidoController.js';
+
+import authMiddleware from '../middleware/authMiddleware.js';
+
 
 const router = express.Router();
 
@@ -60,5 +64,13 @@ router.post('/pedidos', createPedido);
 router.get('/pedidos/:id', getPedidoById);
 router.put('/pedidos/:id', updatePedido);
 router.delete('/pedidos/:id', deletePedido);
+
+// Ruta para login (JWT)
+router.post('/login', loginUsuario);
+
+router.get('/ruta-protegida', authMiddleware, (req, res) => {
+  // req.user contiene los datos del usuario autenticado
+  res.json({ message: 'Acceso permitido', user: req.user });
+});
 
 export default router;

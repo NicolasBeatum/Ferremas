@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './AuthModal.css';
 
-const primaryColor = "#e60026";
-const accentColor = "#f8f9fa";
-
 // Función para formatear el RUT chileno
 function formatRut(value) {
   let rut = value.replace(/[^0-9kK]/g, '').toUpperCase();
@@ -41,21 +38,22 @@ const AuthModal = ({ show, onHide, modalRef, onLogin }) => {
     e.preventDefault();
     setError('');
     if (isLogin) {
-      // LOGIN SIMULADO: busca usuario en la base de datos
+      // LOGIN usando JWT
       try {
-        const res = await axios.get('http://localhost:8000/api/usuarios');
-        const usuario = res.data.find(
-          u => u.CorreoUsuario === CorreoUsuario && u.ContraseñaUsuario === ContraseñaUsuario
-        );
-        if (usuario) {
-          onLogin && onLogin(usuario);
+        const res = await axios.post('http://localhost:8000/api/login', {
+          CorreoUsuario,
+          ContraseñaUsuario
+        });
+        if (res.data && res.data.token) {
+          localStorage.setItem('token', res.data.token); // Guarda el token
+          onLogin && onLogin(res.data.usuario); // Guarda el usuario en el estado global
           onHide();
           resetForm();
         } else {
-          setError('Correo o contraseña incorrectos');
+          setError(res.data.message || 'Credenciales incorrectas');
         }
       } catch (err) {
-        setError('Error al iniciar sesión');
+        setError('Credenciales incorrectas');
       }
     } else {
       // REGISTRO

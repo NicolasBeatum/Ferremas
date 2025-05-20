@@ -1,5 +1,9 @@
 import Usuario from '../models/UsuarioModel.js';
 import TipoUsuario from '../models/TipoUsuarioModel.js';
+import jwt from 'jsonwebtoken';
+
+// Cambia esto por una variable de entorno en producción
+const SECRET = 'zKuL0Nehvm';
 
 // Obtener todos los usuarios
 export const getUsuarios = async (req, res) => {
@@ -19,6 +23,36 @@ export const createUsuario = async (req, res) => {
     try {
         const usuario = await Usuario.create({ RutUsuario, CorreoUsuario, ContraseñaUsuario, idTipoUsuario });
         res.status(201).json({ message: 'Usuario creado exitosamente', usuario });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// LOGIN con JWT
+export const loginUsuario = async (req, res) => {
+    const { CorreoUsuario, ContraseñaUsuario } = req.body;
+    try {
+        const usuario = await Usuario.findOne({
+            where: { CorreoUsuario, ContraseñaUsuario },
+            include: [{ model: TipoUsuario, attributes: ['NombreTipoUsuario'] }]
+        });
+
+        if (!usuario) {
+            return res.status(401).json({ message: 'Credenciales incorrectas' });
+        }
+
+        // Crea el token JWT
+        const token = jwt.sign(
+            {
+                id: usuario.idUsuario,
+                correo: usuario.CorreoUsuario,
+                tipo: usuario.idTipoUsuario
+            },
+            SECRET,
+            { expiresIn: '2h' }
+        );
+
+        res.json({ usuario, token });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
