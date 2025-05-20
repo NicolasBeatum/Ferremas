@@ -1,25 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Footer from './components/Footer';
-import Navbar from './components/Navbar.js'; // Asegúrate de que la ruta sea correcta
+import Navbar from './components/Navbar.js';
 import './App.css';
-import OffersCarousel from './components/OffersCarousel'; // Asegúrate de que la ruta sea correcta
+import OffersCarousel from './components/OffersCarousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import axios from 'axios';
 
 function App() {
-  // Simulación de productos
-  const productos = [
-    { nombre: 'Sample', precio: 1.50, imagen: 'https://via.placeholder.com/150?text=Arroz' },
-    { nombre: 'Sample', precio: 1.20, imagen: 'https://via.placeholder.com/150?text=Azúcar' },
-    { nombre: 'Sample', precio: 2.00, imagen: 'https://via.placeholder.com/150?text=Aceite' },
-    { nombre: 'Sample', precio: 2.50, imagen: 'https://via.placeholder.com/150?text=Huevos' }
-  ];
+  const [productos, setProductos] = useState([]);
+
+  useEffect(() => {
+    const fetchProductos = async () => {
+      try {
+        const res = await axios.get('http://localhost:8000/api/productos');
+        setProductos(res.data);
+      } catch (error) {
+        console.error('Error al cargar productos:', error);
+      }
+    };
+    fetchProductos();
+  }, []);
+
+  // Mezclar productos y tomar 4 aleatorios
+  const productosAleatorios = React.useMemo(() => {
+    if (productos.length <= 4) return productos;
+    const mezclados = [...productos].sort(() => Math.random() - 0.5);
+    return mezclados.slice(0, 4);
+  }, [productos]);
 
   return (
     <div className="app">
       <header className="topbar">
-      <Navbar />
-    </header>
+        <Navbar />
+      </header>
 
       <div className="hero">
         <h2>¡Bienvenido a Ferremas!</h2>
@@ -27,11 +40,11 @@ function App() {
       </div>
       <OffersCarousel />
       <section className="productos">
-        {productos.map((p, index) => (
-          <div key={index} className="producto">
-            <img src={p.imagen} alt={p.nombre} />
-            <h3>{p.nombre}</h3>
-            <p>${p.precio.toFixed(2)}</p>
+        {productosAleatorios.map((p, index) => (
+          <div key={p.idProducto || index} className="producto">
+            <img src={p.ImagenProducto || 'https://via.placeholder.com/150?text=Sin+Imagen'} alt={p.NombreProducto} />
+            <h3>{p.NombreProducto}</h3>
+            <p>${p.PrecioProducto}</p>
           </div>
         ))}
       </section>
