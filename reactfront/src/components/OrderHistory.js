@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import useMostrarPrecio from '../helpers/mostrarPrecio.js';
 
 const OrderHistory = () => {
   const [pedidos, setPedidos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const mostrarPrecio = useMostrarPrecio();
 
   useEffect(() => {
     const fetchPedidos = async () => {
@@ -61,12 +63,12 @@ const OrderHistory = () => {
                 <ul>
                   {pedido.detalles.map(det => (
                     <li key={det.idDetalle}>
-                      {det.NombreProducto} x {det.Cantidad} - ${det.PrecioProducto}
+                      {det.NombreProducto} x {det.Cantidad} - {mostrarPrecio(det.PrecioProducto)}
                     </li>
                   ))}
                 </ul>
               </div>
-              <div><strong>Total:</strong> ${pedido.total}</div>
+              <div><strong>Total:</strong> {mostrarPrecio(pedido.total)}</div>
             </li>
           ))}
         </ul>

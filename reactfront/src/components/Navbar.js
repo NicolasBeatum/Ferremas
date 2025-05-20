@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import AuthModal from "./AuthModal";
 import { useNavigate } from 'react-router-dom';
+import { useMoneda } from '../context/MonedaContext';
 
 const Navbar = ({ usuario, setUsuario, cartCount, onCartClick, onHistoryClick }) => {
     const [showAuth, setShowAuth] = useState(false);
@@ -8,6 +9,7 @@ const Navbar = ({ usuario, setUsuario, cartCount, onCartClick, onHistoryClick })
     const [search, setSearch] = useState('');
     const authRef = useRef();
     const navigate = useNavigate();
+    const { moneda, setMoneda } = useMoneda();
 
     const getNombre = (correo) => correo ? correo.split('@')[0] : '';
 
@@ -35,7 +37,7 @@ const Navbar = ({ usuario, setUsuario, cartCount, onCartClick, onHistoryClick })
             <nav>
                 <div className="topbar-container">
                     <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Easy_logo.svg/2560px-Easy_logo.svg.png"
+                        src="/Ferremas.png"
                         alt="Ferremas"
                         className="logo"
                         style={{ cursor: "pointer" }}
@@ -148,11 +150,14 @@ const Navbar = ({ usuario, setUsuario, cartCount, onCartClick, onHistoryClick })
 
                 <div className="topbar-bottom">
                     <div className="left-items">
-                        <a href="#">Todos los productos</a>
+                        <a href="/catalogo">Todos los productos</a>
                     </div>
                     <div className="right-items">
                         <span>Todo Ferremas hasta 6 cuotas sin interés</span>
-                        <a href="#">Horarios y tiendas</a>
+                        <select value={moneda} onChange={e => setMoneda(e.target.value)} style={{ marginLeft: 16 }}>
+                            <option value="CLP">CLP</option>
+                            <option value="USD">USD</option>
+                        </select>
                     </div>
                 </div>
             </nav>

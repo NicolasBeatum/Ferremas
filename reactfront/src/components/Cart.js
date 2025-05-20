@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import useMostrarPrecio from '../helpers/mostrarPrecio.js';
 
 const Cart = ({ carrito, removeFromCart, updateQuantity }) => {
   const [loading, setLoading] = useState(false);
   const [pedidoRealizado, setPedidoRealizado] = useState(false);
   const [error, setError] = useState('');
+  const mostrarPrecio = useMostrarPrecio();
 
   const total = carrito.reduce((acc, item) => acc + item.PrecioProducto * item.cantidad, 0);
 
@@ -99,7 +101,9 @@ const Cart = ({ carrito, removeFromCart, updateQuantity }) => {
                 <div style={{ color: "#666", fontSize: 14, margin: "4px 0" }}>
                   {item.DescripcionProducto || "Sin descripción"}
                 </div>
-                <div style={{ fontWeight: 600, color: "#e60026" }}>${item.PrecioProducto}</div>
+                <div style={{ fontWeight: 600, color: "#e60026" }}>
+                  {mostrarPrecio(item.PrecioProducto)}
+                </div>
               </div>
 
               {/* Cantidad y quitar a la derecha */}
@@ -130,7 +134,7 @@ const Cart = ({ carrito, removeFromCart, updateQuantity }) => {
           ))}
         </ul>
       )}
-      <h4>Total: ${total}</h4>
+      <h4>Total: {mostrarPrecio(total)}</h4>
       {error && <div className="alert alert-danger">{error}</div>}
       {pedidoRealizado && <div className="alert alert-success">¡Pedido realizado y stock actualizado!</div>}
       <button

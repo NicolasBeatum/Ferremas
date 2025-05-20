@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
+import useMostrarPrecio from '../helpers/mostrarPrecio.js';
 
 const ProductoPage = ({ addToCart }) => {
   const { id } = useParams();
   const [producto, setProducto] = useState(null);
   const [cantidad, setCantidad] = useState(1);
   const [showModal, setShowModal] = useState(false);
+  const mostrarPrecio = useMostrarPrecio();
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -47,7 +49,9 @@ const ProductoPage = ({ addToCart }) => {
         style={{ width: "100%", maxHeight: 350, objectFit: "contain", borderRadius: 8, marginBottom: 24 }}
       />
       <h2>{producto.NombreProducto}</h2>
-      <p style={{ fontSize: 18, color: "#e60026", fontWeight: 700 }}>${producto.PrecioProducto}</p>
+      <p style={{ fontSize: 18, color: "#e60026", fontWeight: 700 }}>
+        {mostrarPrecio(producto.PrecioProducto)}
+      </p>
       <p style={{ margin: "16px 0" }}>{producto.DescripcionProducto || "Sin descripción."}</p>
       <p style={{ margin: "8px 0", fontWeight: 600 }}>
         Stock disponible: <span style={{ color: stock > 0 ? "#198754" : "#e60026" }}>{stock}</span>

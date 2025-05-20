@@ -11,7 +11,7 @@ import ProductoPage from './components/ProductPage.js';
 import Cart from './components/Cart.js';
 import OrderHistory from './components/OrderHistory.js'; // Asegúrate de crear este archivo
 import ResultadoPago from './components/ResultadoPago';
-
+import Catalogo from './components/Catalogo';
 
 function App() {
   const [productos, setProductos] = useState([]);
@@ -160,6 +160,7 @@ function AppContent({
         <Route path="/carrito" element={<Cart carrito={carrito} removeFromCart={removeFromCart} updateQuantity={updateQuantity} />} />
         <Route path="/historial" element={<OrderHistory />} />
         <Route path="/resultado-pago" element={<ResultadoPago />} />
+        <Route path="/catalogo" element={<Catalogo />} />
       </Routes>
       <Footer />
     </div>
