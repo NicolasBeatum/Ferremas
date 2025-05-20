@@ -71,3 +71,23 @@ export const deleteProducto = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+
+export const updateStockProducto = async (req, res) => {
+    const { id } = req.params;
+    const { cantidadVendida } = req.body;
+    try {
+        const producto = await Producto.findByPk(id);
+        if (!producto) {
+            return res.status(404).json({ message: 'Producto no encontrado' });
+        }
+        if (producto.StockProducto < cantidadVendida) {
+            return res.status(400).json({ message: 'Stock insuficiente' });
+        }
+        producto.StockProducto -= cantidadVendida;
+        await producto.save();
+        res.json({ message: 'Stock actualizado', producto });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};

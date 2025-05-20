@@ -18,11 +18,11 @@ export const getPedidos = async (req, res) => {
     }
 };
 
-// Crear un nuevo pedido
+// Crear un nuevo pedido (con dirección)
 export const createPedido = async (req, res) => {
-    const { IdUsuario, detalles } = req.body; // detalles es un array de { IdProducto, Cantidad }
+    const { IdUsuario, detalles, Direccion } = req.body; // detalles es un array de { IdProducto, Cantidad }
     try {
-        const pedido = await Pedidos.create({ IdUsuario });
+        const pedido = await Pedidos.create({ IdUsuario, Direccion });
 
         if (detalles && detalles.length > 0) {
             const detallesPedido = detalles.map(detalle => ({
@@ -60,10 +60,45 @@ export const getPedidoById = async (req, res) => {
     }
 };
 
+// Obtener historial de pedidos por usuario (incluye dirección)
+export const getPedidosByUsuario = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const pedidos = await Pedidos.findAll({
+    where: { IdUsuario: id },
+    order: [['FechaPedido', 'DESC']],
+    include: [
+        {
+            model: DetallePedido,
+            as: 'DetallePedidos', // ¡IMPORTANTE!
+            include: [{ model: Producto }]
+        }
+    ]
+});
+
+        const pedidosFormateados = pedidos.map(pedido => ({
+            idPedido: pedido.IdPedido,
+            fecha: pedido.FechaPedido,
+            direccion: pedido.Direccion,
+            detalles: pedido.DetallePedidos.map(det => ({
+                idDetalle: det.IdDetalle,
+                NombreProducto: det.Producto?.NombreProducto,
+                Cantidad: det.Cantidad,
+                PrecioProducto: det.Producto?.PrecioProducto
+            })),
+            total: pedido.DetallePedidos.reduce((acc, det) => acc + (det.Cantidad * (det.Producto?.PrecioProducto || 0)), 0)
+        }));
+
+        res.json(pedidosFormateados);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 // Actualizar un pedido
 export const updatePedido = async (req, res) => {
     const { id } = req.params;
-    const { IdUsuario, detalles } = req.body;
+    const { IdUsuario, detalles, Direccion } = req.body;
     try {
         const pedido = await Pedidos.findByPk(id);
 
@@ -71,7 +106,7 @@ export const updatePedido = async (req, res) => {
             return res.status(404).json({ message: 'Pedido no encontrado' });
         }
 
-        await pedido.update({ IdUsuario });
+        await pedido.update({ IdUsuario, Direccion });
 
         if (detalles && detalles.length > 0) {
             await DetallePedido.destroy({ where: { IdPedido: id } });
@@ -103,6 +138,25 @@ export const deletePedido = async (req, res) => {
         await pedido.destroy();
 
         res.json({ message: 'Pedido eliminado exitosamente' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const updateStockProducto = async (req, res) => {
+    const { id } = req.params;
+    const { cantidadVendida } = req.body;
+    try {
+        const producto = await Producto.findByPk(id);
+        if (!producto) {
+            return res.status(404).json({ message: 'Producto no encontrado' });
+        }
+        if (producto.StockProducto < cantidadVendida) {
+            return res.status(400).json({ message: 'Stock insuficiente' });
+        }
+        producto.StockProducto -= cantidadVendida;
+        await producto.save();
+        res.json({ message: 'Stock actualizado', producto });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

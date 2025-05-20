@@ -33,6 +33,9 @@ import {
 } from '../controllers/PedidoController.js';
 
 import authMiddleware from '../middleware/authMiddleware.js';
+import { updateStockProducto } from '../controllers/ProductoController.js';
+import { getPedidosByUsuario } from '../controllers/PedidoController.js';
+
 
 
 const router = express.Router();
@@ -72,5 +75,8 @@ router.get('/ruta-protegida', authMiddleware, (req, res) => {
   // req.user contiene los datos del usuario autenticado
   res.json({ message: 'Acceso permitido', user: req.user });
 });
+
+router.put('/productos/:id/stock', updateStockProducto);
+router.get('/pedidos/usuario/:id', getPedidosByUsuario);
 
 export default router;

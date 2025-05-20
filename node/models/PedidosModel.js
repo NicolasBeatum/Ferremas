@@ -1,6 +1,8 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/db.js';
 import Usuario from './UsuarioModel.js';
+import DetallePedido from './DetallePedidoModel.js';
+
 
 const Pedidos = sequelize.define('Pedidos', {
     IdPedido: {
@@ -24,6 +26,5 @@ const Pedidos = sequelize.define('Pedidos', {
     timestamps: false
 });
 
-Pedidos.belongsTo(Usuario, { foreignKey: 'IdUsuario' });
 
 export default Pedidos;

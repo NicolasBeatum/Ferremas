@@ -1,16 +1,16 @@
 import React, { useRef, useState } from "react";
 import AuthModal from "./AuthModal";
+import { useNavigate } from 'react-router-dom';
 
-const Navbar = ({ usuario, setUsuario }) => {
+const Navbar = ({ usuario, setUsuario, cartCount, onCartClick, onHistoryClick }) => {
     const [showAuth, setShowAuth] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [search, setSearch] = useState('');
     const authRef = useRef();
+    const navigate = useNavigate();
 
-    // Obtiene el nombre antes del @
     const getNombre = (correo) => correo ? correo.split('@')[0] : '';
 
-    // Cierra el dropdown si se hace click fuera
     React.useEffect(() => {
         const handleClickOutside = (event) => {
             if (!event.target.closest('.user-dropdown')) {
@@ -25,11 +25,8 @@ const Navbar = ({ usuario, setUsuario }) => {
         };
     }, [dropdownOpen]);
 
-    // Función para buscar productos (puedes adaptarla a tu lógica)
     const handleSearch = (e) => {
         e.preventDefault();
-        // Aquí puedes redirigir o filtrar productos según tu lógica
-        // Por ejemplo, podrías levantar un evento o usar navigate si usas react-router
         alert(`Buscar: ${search}`);
     };
 
@@ -41,6 +38,8 @@ const Navbar = ({ usuario, setUsuario }) => {
                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Easy_logo.svg/2560px-Easy_logo.svg.png"
                         alt="Ferremas"
                         className="logo"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => navigate('/')}
                     />
 
                     <form className="search-bar" onSubmit={handleSearch}>
@@ -95,6 +94,16 @@ const Navbar = ({ usuario, setUsuario }) => {
                                                 </button>
                                                 <button
                                                     className="dropdown-item"
+                                                    style={{ width: "100%", textAlign: "left", background: "none", border: "none", padding: "0.5rem 1rem" }}
+                                                    onClick={() => {
+                                                        setDropdownOpen(false);
+                                                        onHistoryClick();
+                                                    }}
+                                                >
+                                                    Historial de pedidos
+                                                </button>
+                                                <button
+                                                    className="dropdown-item"
                                                     style={{ width: "100%", textAlign: "left", background: "none", border: "none", padding: "0.5rem 1rem", color: "#e60026" }}
                                                     onClick={() => {
                                                         localStorage.removeItem('token');
@@ -121,8 +130,18 @@ const Navbar = ({ usuario, setUsuario }) => {
                             </div>
                         </div>
 
-                        <div className="topbar-item cart">
+                        <div className="topbar-item cart" onClick={onCartClick} style={{ cursor: "pointer" }}>
                             🛒
+                            {cartCount > 0 && (
+                                <span style={{
+                                    background: "#e60026",
+                                    color: "#fff",
+                                    borderRadius: "50%",
+                                    padding: "2px 8px",
+                                    marginLeft: 4,
+                                    fontSize: 13
+                                }}>{cartCount}</span>
+                            )}
                         </div>
                     </div>
                 </div>

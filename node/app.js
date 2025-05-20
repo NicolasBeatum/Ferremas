@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import db from "./database/db.js"; // Importa la conexión a la base de datos
 import router from "./routes/routes.js"; // Importa las rutas
+import './models/index.js'; // <-- Importa esto antes de las rutas
 const app = express();
 
 // Middleware para parsear JSON
