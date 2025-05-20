@@ -37,30 +37,35 @@ const Cart = ({ carrito, removeFromCart, updateQuantity }) => {
     }));
 
     try {
-      // Realizar el pedido
-      await axios.post('http://localhost:8000/api/pedidos', {
+      // 1. Crear el pedido
+      const pedidoRes = await axios.post('http://localhost:8000/api/pedidos', {
         IdUsuario,
         detalles
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      console.log('Pedido creado:', pedidoRes.data);
 
-      // Actualizar el stock de cada producto
-      await Promise.all(carrito.map(item =>
-        axios.put(`http://localhost:8000/api/productos/${item.idProducto}/stock`, {
-          cantidadVendida: item.cantidad
-        }, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-      ));
+      const IdPedido = pedidoRes.data.pedido.IdPedido;
+      const monto = carrito.reduce((acc, item) => acc + item.PrecioProducto * item.cantidad, 0);
 
-      setPedidoRealizado(true);
-      // Aquí podrías limpiar el carrito si lo deseas
-      // setCarrito([]);
+      // 2. Iniciar transacción Transbank
+      const transbankRes = await axios.post('http://localhost:8000/api/transbank/iniciar', {
+        IdPedido,
+        monto
+      });
+      console.log('Transbank response:', transbankRes.data);
+
+      // 3. Redirigir a Transbank
+      window.location.href = `${transbankRes.data.url}?token_ws=${transbankRes.data.token}`;
     } catch (e) {
-      setError('Error al realizar el pedido o actualizar el stock');
+      console.error('Error en compra:', e.response ? e.response.data : e.message);
+      if (e.response && e.response.data) {
+        alert('Error backend: ' + JSON.stringify(e.response.data));
+      }
+      setError('Error al procesar el pago');
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

@@ -35,6 +35,7 @@ import {
 import authMiddleware from '../middleware/authMiddleware.js';
 import { updateStockProducto } from '../controllers/ProductoController.js';
 import { getPedidosByUsuario } from '../controllers/PedidoController.js';
+import { iniciarTransaccion, retornoTransbank } from '../controllers/TransbankController.js';
 
 
 
@@ -78,5 +79,9 @@ router.get('/ruta-protegida', authMiddleware, (req, res) => {
 
 router.put('/productos/:id/stock', updateStockProducto);
 router.get('/pedidos/usuario/:id', getPedidosByUsuario);
+
+router.post('/transbank/iniciar', iniciarTransaccion);
+router.post('/transbank/retorno', retornoTransbank);
+router.get('/transbank/retorno', retornoTransbank); // Por si Transbank usa GET
 
 export default router;

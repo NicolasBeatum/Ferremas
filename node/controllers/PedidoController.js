@@ -65,21 +65,22 @@ export const getPedidosByUsuario = async (req, res) => {
     const { id } = req.params;
     try {
         const pedidos = await Pedidos.findAll({
-    where: { IdUsuario: id },
-    order: [['FechaPedido', 'DESC']],
-    include: [
-        {
-            model: DetallePedido,
-            as: 'DetallePedidos', // ¡IMPORTANTE!
-            include: [{ model: Producto }]
-        }
-    ]
-});
+            where: { IdUsuario: id },
+            order: [['FechaPedido', 'DESC']],
+            include: [
+                {
+                    model: DetallePedido,
+                    as: 'DetallePedidos',
+                    include: [{ model: Producto }]
+                }
+            ]
+        });
 
         const pedidosFormateados = pedidos.map(pedido => ({
             idPedido: pedido.IdPedido,
             fecha: pedido.FechaPedido,
             direccion: pedido.Direccion,
+            estadoPago: pedido.EstadoPago, // <-- AGREGA ESTA LÍNEA
             detalles: pedido.DetallePedidos.map(det => ({
                 idDetalle: det.IdDetalle,
                 NombreProducto: det.Producto?.NombreProducto,

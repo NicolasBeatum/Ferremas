@@ -42,7 +42,20 @@ const OrderHistory = () => {
         <ul style={{ listStyle: "none", padding: 0 }}>
           {pedidos.map(pedido => (
             <li key={pedido.idPedido} style={{ borderBottom: "1px solid #eee", marginBottom: 16, paddingBottom: 12 }}>
-              <div><strong>Pedido #{pedido.idPedido}</strong> - {new Date(pedido.fecha).toLocaleString()}</div>
+              <div>
+                <strong>Pedido #{pedido.idPedido}</strong> - {new Date(pedido.fecha).toLocaleString()}
+                <span style={{
+                  marginLeft: 16,
+                  padding: "2px 10px",
+                  borderRadius: 8,
+                  background: pedido.estadoPago === 'pagado' ? '#d4edda' : pedido.estadoPago === 'pendiente' ? '#fff3cd' : '#f8d7da',
+                  color: pedido.estadoPago === 'pagado' ? '#155724' : pedido.estadoPago === 'pendiente' ? '#856404' : '#721c24',
+                  fontWeight: 500,
+                  fontSize: 13
+                }}>
+                  {pedido.estadoPago ? pedido.estadoPago.charAt(0).toUpperCase() + pedido.estadoPago.slice(1) : 'Desconocido'}
+                </span>
+              </div>
               <div>
                 <strong>Productos:</strong>
                 <ul>

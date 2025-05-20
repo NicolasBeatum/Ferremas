@@ -10,6 +10,8 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react
 import ProductoPage from './components/ProductPage.js'; 
 import Cart from './components/Cart.js';
 import OrderHistory from './components/OrderHistory.js'; // Asegúrate de crear este archivo
+import ResultadoPago from './components/ResultadoPago';
+
 
 function App() {
   const [productos, setProductos] = useState([]);
@@ -157,6 +159,7 @@ function AppContent({
         <Route path="/producto/:id" element={<ProductoPage addToCart={addToCart} />} />
         <Route path="/carrito" element={<Cart carrito={carrito} removeFromCart={removeFromCart} updateQuantity={updateQuantity} />} />
         <Route path="/historial" element={<OrderHistory />} />
+        <Route path="/resultado-pago" element={<ResultadoPago />} />
       </Routes>
       <Footer />
     </div>

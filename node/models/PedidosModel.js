@@ -20,6 +20,18 @@ const Pedidos = sequelize.define('Pedidos', {
             model: Usuario,
             key: 'idUsuario'
         }
+    },
+    TransbankToken: {
+        type: DataTypes.STRING(100),
+        allowNull: true
+    },
+    EstadoPago: {
+        type: DataTypes.ENUM('pendiente', 'pagado', 'fallido'),
+        defaultValue: 'pendiente'
+    },
+    TransbankUrl: {
+        type: DataTypes.STRING(255),
+        allowNull: true
     }
 }, {
     tableName: 'Pedidos',
