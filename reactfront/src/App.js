@@ -9,14 +9,16 @@ import { jwtDecode } from 'jwt-decode';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import ProductoPage from './components/ProductPage.js'; 
 import Cart from './components/Cart.js';
-import OrderHistory from './components/OrderHistory.js'; // Asegúrate de crear este archivo
+import OrderHistory from './components/OrderHistory.js'; 
 import ResultadoPago from './components/ResultadoPago';
 import Catalogo from './components/Catalogo';
+import useMostrarPrecio from './helpers/mostrarPrecio';
 
 function App() {
   const [productos, setProductos] = useState([]);
   const [usuario, setUsuario] = useState(null);
   const [carrito, setCarrito] = useState([]);
+  const [busqueda, setBusqueda] = useState('');
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -47,6 +49,13 @@ function App() {
     const mezclados = [...productos].sort(() => Math.random() - 0.5);
     return mezclados.slice(0, 4);
   }, [productos]);
+
+  // Filtrar productos según búsqueda
+  const productosFiltrados = busqueda
+    ? productos.filter(p =>
+        p.NombreProducto.toLowerCase().includes(busqueda.toLowerCase())
+      )
+    : productosAleatorios;
 
   // Añadir producto al carrito
   const addToCart = (producto) => {
@@ -106,7 +115,9 @@ function App() {
         addToCart={addToCart}
         removeFromCart={removeFromCart}
         updateQuantity={updateQuantity}
-        productosAleatorios={productosAleatorios}
+        productosFiltrados={productosFiltrados}
+        busqueda={busqueda}
+        setBusqueda={setBusqueda}
         handleCartClick={handleCartClick}
         handleHistoryClick={handleHistoryClick}
       />
@@ -116,9 +127,10 @@ function App() {
 
 // Separamos el contenido para poder usar useNavigate
 function AppContent({
-  usuario, setUsuario, carrito, addToCart, removeFromCart, updateQuantity, productosAleatorios, handleCartClick, handleHistoryClick
+  usuario, setUsuario, carrito, addToCart, removeFromCart, updateQuantity, productosFiltrados, busqueda, setBusqueda, handleCartClick, handleHistoryClick
 }) {
   const navigate = useNavigate();
+  const mostrarPrecio = useMostrarPrecio();
 
   return (
     <div className="app">
@@ -129,6 +141,8 @@ function AppContent({
           cartCount={carrito.reduce((acc, item) => acc + item.cantidad, 0)}
           onCartClick={() => handleCartClick(navigate)}
           onHistoryClick={() => handleHistoryClick(navigate)}
+          busqueda={busqueda}
+          setBusqueda={setBusqueda}
         />
       </header>
 
@@ -143,15 +157,19 @@ function AppContent({
               </div>
               <OffersCarousel />
               <section className="productos">
-                {productosAleatorios.map((p, index) => (
-                  <div key={p.idProducto || index} className="producto">
-                    <Link to={`/producto/${p.idProducto}`}>
-                      <img src={p.ImagenProducto || 'https://via.placeholder.com/150?text=Sin+Imagen'} alt={p.NombreProducto} />
-                      <h3>{p.NombreProducto}</h3>
-                      <p>${p.PrecioProducto}</p>
-                    </Link>
-                  </div>
-                ))}
+                {productosFiltrados.length === 0 ? (
+                  <p style={{ textAlign: "center" }}>No se encontraron productos.</p>
+                ) : (
+                  productosFiltrados.map((p, index) => (
+                    <div key={p.idProducto || index} className="producto">
+                      <Link to={`/producto/${p.idProducto}`}>
+                        <img src={p.ImagenProducto || 'https://via.placeholder.com/150?text=Sin+Imagen'} alt={p.NombreProducto} />
+                        <h3>{p.NombreProducto}</h3>
+                        <p>{mostrarPrecio(p.PrecioProducto)}</p>
+                      </Link>
+                    </div>
+                  ))
+                )}
               </section>
             </>
           }

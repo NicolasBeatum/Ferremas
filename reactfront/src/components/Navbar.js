@@ -1,19 +1,52 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import AuthModal from "./AuthModal";
 import { useNavigate } from 'react-router-dom';
 import { useMoneda } from '../context/MonedaContext';
 
-const Navbar = ({ usuario, setUsuario, cartCount, onCartClick, onHistoryClick }) => {
+const Navbar = ({
+    usuario, setUsuario, cartCount, onCartClick, onHistoryClick,
+    busqueda, setBusqueda
+}) => {
     const [showAuth, setShowAuth] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [search, setSearch] = useState('');
+    const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+    const [productos, setProductos] = useState([]);
     const authRef = useRef();
     const navigate = useNavigate();
     const { moneda, setMoneda } = useMoneda();
 
     const getNombre = (correo) => correo ? correo.split('@')[0] : '';
 
-    React.useEffect(() => {
+    useEffect(() => {
+        fetch('http://localhost:8000/api/productos')
+            .then(res => res.json())
+            .then(data => setProductos(data))
+            .catch(() => setProductos([]));
+    }, []);
+
+    // Filtrar productos según la búsqueda
+    const productosFiltrados = busqueda.length > 0
+        ? productos.filter(p =>
+            p.NombreProducto.toLowerCase().includes(busqueda.toLowerCase())
+        )
+        : [];
+
+    const handleSearchChange = (e) => {
+        setBusqueda(e.target.value);
+        setShowSearchDropdown(e.target.value.length > 0);
+    };
+
+    const handleSearchBlur = () => {
+        setTimeout(() => setShowSearchDropdown(false), 150);
+    };
+
+    const handleResultClick = (idProducto) => {
+        setBusqueda('');
+        setShowSearchDropdown(false);
+        navigate(`/producto/${idProducto}`);
+    };
+
+    useEffect(() => {
         const handleClickOutside = (event) => {
             if (!event.target.closest('.user-dropdown')) {
                 setDropdownOpen(false);
@@ -27,11 +60,6 @@ const Navbar = ({ usuario, setUsuario, cartCount, onCartClick, onHistoryClick })
         };
     }, [dropdownOpen]);
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        alert(`Buscar: ${search}`);
-    };
-
     return (
         <>
             <nav>
@@ -44,16 +72,59 @@ const Navbar = ({ usuario, setUsuario, cartCount, onCartClick, onHistoryClick })
                         onClick={() => navigate('/')}
                     />
 
-                    <form className="search-bar" onSubmit={handleSearch}>
-                        <span className="search-icon">🔍</span>
-                        <input
-                            type="text"
-                            placeholder="Buscar producto"
-                            value={search}
-                            onChange={e => setSearch(e.target.value)}
-                        />
-                        <button type="submit" style={{ display: "none" }}>Buscar</button>
-                    </form>
+                    <div style={{ position: "relative", flex: 1 }}>
+                        <form className="search-bar" onSubmit={e => e.preventDefault()}>
+                            <span className="search-icon">🔍</span>
+                            <input
+                                type="text"
+                                placeholder="Buscar producto"
+                                value={busqueda}
+                                onChange={handleSearchChange}
+                                onFocus={() => setShowSearchDropdown(busqueda.length > 0)}
+                                onBlur={handleSearchBlur}
+                                autoComplete="off"
+                            />
+                            <button type="submit" style={{ display: "none" }}>Buscar</button>
+                        </form>
+                        {showSearchDropdown && productosFiltrados.length > 0 && (
+                            <div
+                                style={{
+                                    position: "absolute",
+                                    top: "100%",
+                                    left: 0,
+                                    right: 0,
+                                    background: "#fff",
+                                    border: "1px solid #ddd",
+                                    borderRadius: 8,
+                                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                                    zIndex: 3000,
+                                    maxHeight: 300,
+                                    overflowY: "auto"
+                                }}
+                            >
+                                {productosFiltrados.map(producto => (
+                                    <div
+                                        key={producto.idProducto}
+                                        style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            padding: "8px 12px",
+                                            cursor: "pointer",
+                                            borderBottom: "1px solid #f0f0f0"
+                                        }}
+                                        onMouseDown={() => handleResultClick(producto.idProducto)}
+                                    >
+                                        <img
+                                            src={producto.ImagenProducto || 'https://via.placeholder.com/40?text=Sin+Imagen'}
+                                            alt={producto.NombreProducto}
+                                            style={{ width: 40, height: 40, objectFit: "cover", borderRadius: 4, marginRight: 12 }}
+                                        />
+                                        <span style={{ color: "#111" }}>{producto.NombreProducto}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
 
                     <div className="topbar-links">
                         <div className="topbar-item user-dropdown" style={{ position: "relative" }}>

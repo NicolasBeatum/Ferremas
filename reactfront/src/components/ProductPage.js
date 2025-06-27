@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
 import useMostrarPrecio from '../helpers/mostrarPrecio.js';
@@ -10,6 +10,7 @@ const ProductoPage = ({ addToCart }) => {
   const [cantidad, setCantidad] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const mostrarPrecio = useMostrarPrecio();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -91,8 +92,11 @@ const ProductoPage = ({ addToCart }) => {
           </p>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
+          <Button variant="secondary" onClick={() => navigate('/catalogo')}>
             Seguir comprando
+          </Button>
+          <Button variant="primary" style={{ background: "#e60026", border: "none" }} onClick={() => navigate('/carrito')}>
+            Ir al carrito
           </Button>
         </Modal.Footer>
       </Modal>

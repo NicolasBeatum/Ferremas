@@ -22,7 +22,7 @@ const OffersCarousel = () => {
 
   return (
     <div className="offers-carousel" style={{ maxWidth: 600, margin: '0 auto' }}>
-      <h2 className="offers-title" style={{ textAlign: 'center' }}>Ofertas Destacadas</h2>
+      <h2 className="offers-title" style={{ textAlign: 'center' }}>Productos Destacados</h2>
       <Carousel>
         {productos.map((producto) => (
           <Carousel.Item key={producto.idProducto}>
