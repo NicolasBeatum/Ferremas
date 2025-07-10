@@ -12,6 +12,8 @@ import Cart from './components/Cart.js';
 import OrderHistory from './components/OrderHistory.js'; 
 import ResultadoPago from './components/ResultadoPago';
 import Catalogo from './components/Catalogo';
+import AdminProductos from './components/AdminProductos';
+import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 import useMostrarPrecio from './helpers/mostrarPrecio';
 
 function App() {
@@ -37,7 +39,11 @@ function App() {
     if (token) {
       try {
         const payload = jwtDecode(token);
-        setUsuario({ CorreoUsuario: payload.correo, id: payload.id });
+        setUsuario({ 
+          CorreoUsuario: payload.correo, 
+          idUsuario: payload.id,
+          idTipoUsuario: payload.tipo 
+        });
       } catch (e) {
         localStorage.removeItem('token');
       }
@@ -179,6 +185,14 @@ function AppContent({
         <Route path="/historial" element={<OrderHistory />} />
         <Route path="/resultado-pago" element={<ResultadoPago />} />
         <Route path="/catalogo" element={<Catalogo />} />
+        <Route 
+          path="/admin-productos" 
+          element={
+            <ProtectedAdminRoute usuario={usuario}>
+              <AdminProductos />
+            </ProtectedAdminRoute>
+          } 
+        />
       </Routes>
       <Footer />
     </div>

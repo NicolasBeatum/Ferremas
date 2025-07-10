@@ -14,6 +14,11 @@ export const getProductos = async (req, res) => {
 export const createProducto = async (req, res) => {
     const { NombreProducto, DescripcionProducto, StockProducto, PrecioProducto, ImagenProducto } = req.body;
     try {
+        // Verificar que el usuario sea administrador
+        if (req.user.idTipoUsuario !== 3) {
+            return res.status(403).json({ message: 'Acceso denegado. Solo administradores pueden crear productos.' });
+        }
+
         const producto = await Producto.create({ NombreProducto, DescripcionProducto, StockProducto, PrecioProducto, ImagenProducto });
         res.status(201).json({ message: 'Producto creado exitosamente', producto });
     } catch (error) {
@@ -42,6 +47,11 @@ export const updateProducto = async (req, res) => {
     const { id } = req.params;
     const { NombreProducto, DescripcionProducto, StockProducto, PrecioProducto, ImagenProducto } = req.body;
     try {
+        // Verificar que el usuario sea administrador
+        if (req.user.idTipoUsuario !== 3) {
+            return res.status(403).json({ message: 'Acceso denegado. Solo administradores pueden actualizar productos.' });
+        }
+
         const producto = await Producto.findByPk(id);
 
         if (!producto) {
@@ -59,6 +69,11 @@ export const updateProducto = async (req, res) => {
 export const deleteProducto = async (req, res) => {
     const { id } = req.params;
     try {
+        // Verificar que el usuario sea administrador
+        if (req.user.idTipoUsuario !== 3) {
+            return res.status(403).json({ message: 'Acceso denegado. Solo administradores pueden eliminar productos.' });
+        }
+
         const producto = await Producto.findByPk(id);
 
         if (!producto) {

@@ -4,7 +4,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "create-admin": "node scripts/createAdmin.js",
+    "create-admin-simple": "node scripts/createAdminSimple.js",
+    "create-custom-admin": "node scripts/createCustomAdmin.js",
+    "list-admins": "node scripts/listAdmins.js"
   },
   "keywords": [],
   "author": "",

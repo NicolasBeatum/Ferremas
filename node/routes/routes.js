@@ -33,6 +33,7 @@ import {
 } from '../controllers/PedidoController.js';
 
 import authMiddleware from '../middleware/authMiddleware.js';
+import adminMiddleware from '../middleware/adminMiddleware.js';
 import { updateStockProducto } from '../controllers/ProductoController.js';
 import { getPedidosByUsuario } from '../controllers/PedidoController.js';
 import { iniciarTransaccion, retornoTransbank } from '../controllers/TransbankController.js';
@@ -50,10 +51,12 @@ router.delete('/usuarios/:id', deleteUsuario);
 
 // Rutas para Productos
 router.get('/productos', getProductos);
-router.post('/productos', createProducto);
 router.get('/productos/:id', getProductoById);
-router.put('/productos/:id', updateProducto);
-router.delete('/productos/:id', deleteProducto);
+
+// Rutas protegidas para administradores (CRUD completo)
+router.post('/productos', adminMiddleware, createProducto);
+router.put('/productos/:id', adminMiddleware, updateProducto);
+router.delete('/productos/:id', adminMiddleware, deleteProducto);
 
 // Rutas para Tipos de Usuario
 router.get('/tipos-usuario', getTipoUsuarios);

@@ -175,6 +175,18 @@ const Navbar = ({
                                                 >
                                                     Historial de pedidos
                                                 </button>
+                                                {usuario && usuario.idTipoUsuario === 3 && (
+                                                    <button
+                                                        className="dropdown-item"
+                                                        style={{ width: "100%", textAlign: "left", background: "none", border: "none", padding: "0.5rem 1rem" }}
+                                                        onClick={() => {
+                                                            setDropdownOpen(false);
+                                                            navigate('/admin-productos');
+                                                        }}
+                                                    >
+                                                        Administrar Productos
+                                                    </button>
+                                                )}
                                                 <button
                                                     className="dropdown-item"
                                                     style={{ width: "100%", textAlign: "left", background: "none", border: "none", padding: "0.5rem 1rem", color: "#e60026" }}
