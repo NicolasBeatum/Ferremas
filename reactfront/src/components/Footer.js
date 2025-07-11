@@ -1,7 +1,77 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './footer.css';
 
 function Footer() {
+  const [formData, setFormData] = useState({
+    nombre: '',
+    email: '',
+    telefono: '',
+    asunto: '',
+    mensaje: ''
+  });
+  const [enviando, setEnviando] = useState(false);
+  const [enviado, setEnviado] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setEnviando(true);
+    setError('');
+    setEnviado(false);
+
+    // Validaciones básicas
+    if (!formData.nombre || !formData.email || !formData.mensaje) {
+      setError('Por favor completa todos los campos obligatorios');
+      setEnviando(false);
+      return;
+    }
+
+    if (!formData.email.includes('@')) {
+      setError('Por favor ingresa un email válido');
+      setEnviando(false);
+      return;
+    }
+
+    try {
+      // Simular envío (aquí puedes conectar con tu backend)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Aquí puedes hacer la llamada a tu API
+      // const response = await fetch('/api/contacto', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(formData)
+      // });
+
+      setEnviado(true);
+      setFormData({
+        nombre: '',
+        email: '',
+        telefono: '',
+        asunto: '',
+        mensaje: ''
+      });
+      
+      // Resetear mensaje de éxito después de 3 segundos
+      setTimeout(() => {
+        setEnviado(false);
+      }, 3000);
+
+    } catch (error) {
+      setError('Error al enviar el mensaje. Por favor intenta nuevamente.');
+    } finally {
+      setEnviando(false);
+    }
+  };
+
   return (
     <footer className="footer">
       <div className="footer-sections">
@@ -41,6 +111,78 @@ function Footer() {
             <li>Soporte técnico</li>
             <li>Ventas corporativas</li>
           </ul>
+        </div>
+        <div className="footer-column contact-form">
+          <h4>Contáctanos</h4>
+          <form onSubmit={handleSubmit} className="contact-form-container">
+            <div className="form-group">
+              <input
+                type="text"
+                name="nombre"
+                placeholder="Nombre *"
+                value={formData.nombre}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <input
+                type="email"
+                name="email"
+                placeholder="Email *"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <input
+                type="tel"
+                name="telefono"
+                placeholder="Teléfono"
+                value={formData.telefono}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-group">
+              <input
+                type="text"
+                name="asunto"
+                placeholder="Asunto"
+                value={formData.asunto}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-group">
+              <textarea
+                name="mensaje"
+                placeholder="Mensaje *"
+                value={formData.mensaje}
+                onChange={handleInputChange}
+                rows="3"
+                required
+              ></textarea>
+            </div>
+            <button 
+              type="submit" 
+              className="btn-enviar"
+              disabled={enviando}
+            >
+              {enviando ? 'Enviando...' : 'Enviar Mensaje'}
+            </button>
+            
+            {error && (
+              <div className="error-message">
+                {error}
+              </div>
+            )}
+            
+            {enviado && (
+              <div className="success-message">
+                ¡Mensaje enviado correctamente! Te contactaremos pronto.
+              </div>
+            )}
+          </form>
         </div>
         <div className="footer-column social">
           <h4>Síguenos</h4>

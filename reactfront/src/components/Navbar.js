@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMoneda } from '../context/MonedaContext';
 
 const Navbar = ({
-    usuario, setUsuario, cartCount, onCartClick, onHistoryClick,
+    usuario, setUsuario, cartCount, onCartClick, onHistoryClick, onLogout,
     busqueda, setBusqueda
 }) => {
     const [showAuth, setShowAuth] = useState(false);
@@ -191,8 +191,7 @@ const Navbar = ({
                                                     className="dropdown-item"
                                                     style={{ width: "100%", textAlign: "left", background: "none", border: "none", padding: "0.5rem 1rem", color: "#e60026" }}
                                                     onClick={() => {
-                                                        localStorage.removeItem('token');
-                                                        setUsuario(null);
+                                                        onLogout();
                                                         setDropdownOpen(false);
                                                     }}
                                                 >

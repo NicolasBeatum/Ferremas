@@ -19,7 +19,10 @@ import useMostrarPrecio from './helpers/mostrarPrecio';
 function App() {
   const [productos, setProductos] = useState([]);
   const [usuario, setUsuario] = useState(null);
-  const [carrito, setCarrito] = useState([]);
+  const [carrito, setCarrito] = useState(() => {
+    const carritoGuardado = localStorage.getItem('carrito');
+    return carritoGuardado ? JSON.parse(carritoGuardado) : [];
+  });
   const [busqueda, setBusqueda] = useState('');
 
   useEffect(() => {
@@ -50,6 +53,11 @@ function App() {
     }
   }, []);
 
+  // Guardar carrito en localStorage cada vez que cambie
+  useEffect(() => {
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+  }, [carrito]);
+
   const productosAleatorios = React.useMemo(() => {
     if (productos.length <= 4) return productos;
     const mezclados = [...productos].sort(() => Math.random() - 0.5);
@@ -67,14 +75,16 @@ function App() {
   const addToCart = (producto) => {
     setCarrito(prev => {
       const existe = prev.find(item => item.idProducto === producto.idProducto);
+      const cantidad = producto.cantidad || 1;
+      
       if (existe) {
         return prev.map(item =>
           item.idProducto === producto.idProducto
-            ? { ...item, cantidad: item.cantidad + 1 }
+            ? { ...item, cantidad: item.cantidad + cantidad }
             : item
         );
       }
-      return [...prev, { ...producto, cantidad: 1 }];
+      return [...prev, { ...producto, cantidad }];
     });
   };
 
@@ -112,6 +122,14 @@ function App() {
     navigate('/historial');
   };
 
+  // Handler para cerrar sesión
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('carrito');
+    setUsuario(null);
+    setCarrito([]);
+  };
+
   return (
     <Router>
       <AppContent
@@ -126,6 +144,7 @@ function App() {
         setBusqueda={setBusqueda}
         handleCartClick={handleCartClick}
         handleHistoryClick={handleHistoryClick}
+        handleLogout={handleLogout}
       />
     </Router>
   );
@@ -133,7 +152,7 @@ function App() {
 
 // Separamos el contenido para poder usar useNavigate
 function AppContent({
-  usuario, setUsuario, carrito, addToCart, removeFromCart, updateQuantity, productosFiltrados, busqueda, setBusqueda, handleCartClick, handleHistoryClick
+  usuario, setUsuario, carrito, addToCart, removeFromCart, updateQuantity, productosFiltrados, busqueda, setBusqueda, handleCartClick, handleHistoryClick, handleLogout
 }) {
   const navigate = useNavigate();
   const mostrarPrecio = useMostrarPrecio();
@@ -147,6 +166,7 @@ function AppContent({
           cartCount={carrito.reduce((acc, item) => acc + item.cantidad, 0)}
           onCartClick={() => handleCartClick(navigate)}
           onHistoryClick={() => handleHistoryClick(navigate)}
+          onLogout={handleLogout}
           busqueda={busqueda}
           setBusqueda={setBusqueda}
         />
@@ -184,7 +204,7 @@ function AppContent({
         <Route path="/carrito" element={<Cart carrito={carrito} removeFromCart={removeFromCart} updateQuantity={updateQuantity} />} />
         <Route path="/historial" element={<OrderHistory />} />
         <Route path="/resultado-pago" element={<ResultadoPago />} />
-        <Route path="/catalogo" element={<Catalogo />} />
+        <Route path="/catalogo" element={<Catalogo addToCart={addToCart} usuario={usuario} />} />
         <Route 
           path="/admin-productos" 
           element={
